@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class StringUtils extends org.apache.commons.lang3.StringUtils {
+public class StringUtils extends org.apache.commons.lang.StringUtils {
 
     private static final String CHINESE_PATTERN = "[\u4e00-\u9fa5]";
 
