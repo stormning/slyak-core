@@ -19,7 +19,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.parser.Feature;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.google.common.base.Objects;
-import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang.ObjectUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.internal.CoreMessageLogger;
@@ -49,7 +49,7 @@ import java.util.Properties;
 public class JSONType implements UserType, DynamicParameterizedType, Serializable {
     private static final long serialVersionUID = 352044032843534075L;
     private static final CoreMessageLogger LOG = (CoreMessageLogger) Logger.getMessageLogger(CoreMessageLogger.class, JSONType.class.getName());
-    public static final String TYPE = "com.wisorg.scc.api.internal.core.support.hibernate.JSONType";
+    public static final String TYPE = "com.slyak.core.hibernate.JSONType";
     public static final String CLASS_NAME = "class";
     private int sqlType = 12;
     private Type type = Object.class;
