@@ -17,10 +17,7 @@ package com.slyak.bean;
 import com.slyak.core.hibernate.JSONType;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Lob;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
@@ -37,7 +34,7 @@ public class Content extends AuditableBase implements Serializable {
     @Column(nullable = false)
     private String title;
 
-    @Basic
+    @Basic(fetch = FetchType.LAZY)
     @Lob
     @Column
     private String body;
@@ -48,6 +45,9 @@ public class Content extends AuditableBase implements Serializable {
 
     @Column
     private Status status = Status.ENABLED;
+
+    @Column(nullable = false)
+    private int weight = 0;
 
     public List<Long> getFileIds() {
         return fileIds;
@@ -63,5 +63,29 @@ public class Content extends AuditableBase implements Serializable {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
     }
 }
