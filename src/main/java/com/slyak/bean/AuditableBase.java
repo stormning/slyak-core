@@ -84,7 +84,7 @@ public class AuditableBase implements Auditable<Long, Long> {
 
     @Override
     public DateTime getLastModifiedDate() {
-        return getLastModifiedDate();
+        return this.lastModifiedDate;
     }
 
     @Override
