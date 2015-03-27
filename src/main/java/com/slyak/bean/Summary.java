@@ -21,7 +21,7 @@ public class Summary extends AuditableBase implements Serializable {
     @Column(nullable = false)
     private String title;
 
-    @Column
+    @Column(length = 1000)
     private String summary;
 
     @Column
