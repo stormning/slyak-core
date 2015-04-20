@@ -1,8 +1,8 @@
 package com.slyak.core.spring.mvc.router.support;
 
-import org.resthub.web.springmvc.router.HTTPRequestAdapter;
-import org.resthub.web.springmvc.router.Router;
-import org.resthub.web.springmvc.router.exceptions.ActionNotFoundException;
+import com.slyak.core.spring.mvc.router.HTTPRequestAdapter;
+import com.slyak.core.spring.mvc.router.Router;
+import com.slyak.core.spring.mvc.router.exceptions.ActionNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.support.AopUtils;
