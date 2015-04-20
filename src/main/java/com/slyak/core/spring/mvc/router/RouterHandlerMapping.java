@@ -1,8 +1,8 @@
 package com.slyak.core.spring.mvc.router;
 
-import org.resthub.web.springmvc.router.exceptions.NoRouteFoundException;
-import org.resthub.web.springmvc.router.exceptions.RouteFileParsingException;
-import org.resthub.web.springmvc.router.support.RouterHandlerResolver;
+import com.slyak.core.spring.mvc.router.exceptions.NoRouteFoundException;
+import com.slyak.core.spring.mvc.router.exceptions.RouteFileParsingException;
+import com.slyak.core.spring.mvc.router.support.RouterHandlerResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
