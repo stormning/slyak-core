@@ -1,22 +1,21 @@
 package com.slyak.core.spring.mvc.router;
 
+import com.slyak.core.spring.mvc.router.exceptions.NoHandlerFoundException;
+import com.slyak.core.spring.mvc.router.exceptions.NoRouteFoundException;
+import com.slyak.core.spring.mvc.router.exceptions.RouteFileParsingException;
+import jregex.Matcher;
+import jregex.Pattern;
+import jregex.REFlags;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
-
-import jregex.Matcher;
-import jregex.Pattern;
-import jregex.REFlags;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.resthub.web.springmvc.router.exceptions.NoHandlerFoundException;
-import org.resthub.web.springmvc.router.exceptions.NoRouteFoundException;
-import org.resthub.web.springmvc.router.exceptions.RouteFileParsingException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.core.io.Resource;
 
 /**
  * <p>The router matches HTTP requests to action invocations.
@@ -24,7 +23,7 @@ import org.springframework.core.io.Resource;
  *
  * @author Play! Framework developers
  * @author Brian Clozel
- * @see org.resthub.web.springmvc.router.RouterHandlerMapping
+ * @see RouterHandlerMapping
  */
 public class Router {
 

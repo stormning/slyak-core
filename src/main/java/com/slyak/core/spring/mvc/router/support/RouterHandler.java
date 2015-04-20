@@ -1,9 +1,9 @@
 package com.slyak.core.spring.mvc.router.support;
 
-import java.lang.reflect.Method;
-import org.resthub.web.springmvc.router.Router;
-import org.resthub.web.springmvc.router.Router.Route;
+import com.slyak.core.spring.mvc.router.Router;
 import org.springframework.web.method.HandlerMethod;
+
+import java.lang.reflect.Method;
 
 /**
  * Bears the request mapping information to be handled by the RequestMappingHandlerAdapter
@@ -28,7 +28,7 @@ public class RouterHandler extends HandlerMethod {
         this.route = route;
     }
 
-    public Route getRoute() {
+    public Router.Route getRoute() {
         return route;
     }
     

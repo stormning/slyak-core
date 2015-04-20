@@ -5,7 +5,7 @@ import org.springframework.beans.BeansException;
 /**
  * Exception: Error while parsing route file
  * @author Brian Clozel
- * @see org.resthub.web.springmvc.router.Router
+ * @see com.slyak.core.spring.mvc.router.Router
  */
 public class RouteFileParsingException extends BeansException {
 

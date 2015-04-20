@@ -3,7 +3,7 @@ package com.slyak.core.spring.mvc.router.exceptions;
 /**
  * Exception: No route found (during reverse routing)
  * @author Brian Clozel
- * @see org.resthub.web.springmvc.router.Router
+ * @see com.slyak.core.spring.mvc.router.Router
  */
 public class NoRouteFoundException extends RuntimeException {
 
