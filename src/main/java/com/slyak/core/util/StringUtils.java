@@ -13,11 +13,11 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class StringUtils extends org.apache.commons.lang.StringUtils {
+public class StringUtils extends org.apache.commons.lang3.StringUtils {
 
     private static final String CHINESE_PATTERN = "[\u4e00-\u9fa5]";
 
-    private static final String IMG_PATTERN = "img.*\\W?src\\s*=[\"']{1}?([^\"']+?)[\"']{1}?";
+    private static final String IMG_PATTERN = "img.*\\W?src\\s*=\\s*[\"']{1}?([^\"']+?)[\"']{1}?";
 
     public static String cut(String sourceString, int byteSize) {
         if (isEmpty(sourceString)) {
