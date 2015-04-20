@@ -10,8 +10,6 @@
     </parent>
     <artifactId>slyak-core</artifactId>
     <packaging>jar</packaging>
-    <name>${project.artifactId}</name>
-
     <dependencies>
         <!--spring-->
         <dependency>
@@ -137,6 +135,15 @@
             <artifactId>commons-net</artifactId>
             <version>3.3</version>
         </dependency>
+
+        <!--server-->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
+
+    <name>${project.artifactId}</name>
 
 </project>
