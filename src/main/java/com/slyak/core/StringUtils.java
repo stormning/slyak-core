@@ -6,7 +6,7 @@
  * Copyright : 2013 , SLYAK.COM All Rights Reserved
  * Author : stormning@163.com
  */
-package com.slyak.core.util;
+package com.slyak.core;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
