@@ -26,6 +26,10 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
         return getFiled(ts1, field) - getFiled(ts2, field);
     }
 
+    public static boolean isSameField(long ts1, long ts2, int field) {
+        return diff(ts1, ts2, field) == 0;
+    }
+
     public static void main(String[] args) {
         System.out.println(DateUtils.toCal(new Date().getTime()).get(Calendar.YEAR));
     }
