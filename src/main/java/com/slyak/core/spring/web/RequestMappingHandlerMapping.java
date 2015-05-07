@@ -44,7 +44,7 @@ public class RequestMappingHandlerMapping extends org.springframework.web.servle
                 pattern = StringUtils.replaceEach(ClassUtils.getShortName(handlerType), controllerSuffixes, new String[]{"", ""});
             }
             //first character to lowercase
-            pattern = pattern.substring(0, 1).toLowerCase() + pattern.substring(1);
+            pattern = StringUtils.uncapitalize(pattern);
             info = createRequestMappingInfo(typeCondition, pattern).combine(info);
         } else {
             info = createRequestMappingInfo(typeAnnotation, typeCondition).combine(info);
