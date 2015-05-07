@@ -39,6 +39,12 @@
             <artifactId>spring-data-jpa</artifactId>
         </dependency>
 
+        <!--freemarker-->
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+        </dependency>
+
         <!-- joda time-->
         <dependency>
             <groupId>joda-time</groupId>
