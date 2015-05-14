@@ -8,16 +8,16 @@
  */
 package com.slyak.core;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class StringUtils extends org.apache.commons.lang3.StringUtils {
 
-    private static final String CHINESE_PATTERN = "[\u4e00-\u9fa5]";
+    private static final String CHINESE_REGEX = "[\u4e00-\u9fa5]";
 
-    private static final String IMG_PATTERN = "img.*\\W?src\\s*=\\s*[\"']{1}?([^\"']+?)[\"']{1}?";
+    private static final String IMG_REGEX = "img.*\\W?src\\s*=\\s*[\"']{1}?([^\"']+?)[\"']{1}?";
 
     public static String cut(String sourceString, int byteSize) {
         if (isEmpty(sourceString)) {
@@ -30,10 +30,10 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
 
         int count = 0;
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < sourceString.length(); i++) {
             String temp = String.valueOf(sourceString.charAt(i));
-            if (temp.matches(CHINESE_PATTERN)) {
+            if (temp.matches(CHINESE_REGEX)) {
                 count += 2;
             } else {
                 count += 1;
@@ -49,29 +49,36 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         return html.replaceAll("<style[^>]*?>[\\s\\S]*?</style>|<script[^>]*?>[\\s\\S]*?</script>|<.+?>", "");
     }
 
-    public static Set<String> findImgSrcs(String htmlString) {
-        Set<String> imgSrcs = new LinkedHashSet<String>();
-        Pattern imagePattern = Pattern.compile(IMG_PATTERN);
-        Matcher imgMatcher = imagePattern.matcher(htmlString);
-        while (imgMatcher.find()) {
-            String src = trimToNull(imgMatcher.group(1));
-            if (src != null) {
-                imgSrcs.add(imgMatcher.group(1));
+    public static List<String> findImgSrcs(String input) {
+        return findGroupsIfMatch(IMG_REGEX, input);
+    }
+
+    public static List<String> findGroupsIfMatch(String regex, String input) {
+        List<String> groups = new ArrayList<String>();
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(input);
+        while (matcher.find()) {
+            int c = matcher.groupCount();
+            for (int i = 1; i <= c; i++) {
+                String val = trimToNull(matcher.group(i));
+                if (val != null) {
+                    groups.add(val);
+                }
             }
         }
-        return imgSrcs;
+        return groups;
     }
 
     public static String devidePath(String longPath, String seperator) {
         int len = longPath.length();
         int start = 0;
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         int step = 2;
         while (start < len) {
             if (len - start < step) {
                 step = len - start;
             }
-            sb.append(seperator + longPath.substring(start, start + step));
+            sb.append(seperator).append(longPath.substring(start, start + step));
             start += 2;
         }
         return sb.toString();
