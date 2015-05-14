@@ -44,7 +44,7 @@ public class FreeMarkerConfigurer extends org.springframework.web.servlet.view.f
                 }
 
                 List<String> importVars = StringUtils.findGroupsIfMatch(IMPORT_REGEX, line);
-                if (CollectionUtils.isNotEmpty(rootVars)) {
+                if (CollectionUtils.isNotEmpty(importVars)) {
                     imports.put(importVars.get(1), importVars.get(0));
                     continue;
                 }
@@ -60,5 +60,9 @@ public class FreeMarkerConfigurer extends org.springframework.web.servlet.view.f
 
     public void setImplicitFile(String implicitFile) {
         this.implicitFile = implicitFile;
+    }
+
+    public static void main(String[] args) {
+//        [#import '/main.ftl' as main]
     }
 }
