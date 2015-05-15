@@ -8,6 +8,7 @@ import freemarker.template.TemplateException;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.ui.freemarker.SpringTemplateLoader;
 
 import java.io.IOException;
@@ -36,7 +37,7 @@ public class FreeMarkerConfigurer extends org.springframework.web.servlet.view.f
     protected void postProcessTemplateLoaders(List<TemplateLoader> templateLoaders) {
         super.postProcessTemplateLoaders(templateLoaders);
         try {
-            Resource resource = getResourceLoader().getResource("classpath:" + implicitFile);
+            Resource resource = getResourceLoader().getResource(ResourceLoader.CLASSPATH_URL_PREFIX + implicitFile);
             if (resource.exists()) {
                 List<String> lines = IOUtils.readLines(resource.getInputStream());
                 for (String line : lines) {
@@ -53,7 +54,7 @@ public class FreeMarkerConfigurer extends org.springframework.web.servlet.view.f
                     }
                 }
                 if (ftlroot != null) {
-                    templateLoaders.add(new SpringTemplateLoader(getResourceLoader(), "classpath:" + ftlroot));
+                    templateLoaders.add(new SpringTemplateLoader(getResourceLoader(), ResourceLoader.CLASSPATH_URL_PREFIX + ftlroot));
                 }
             }
         } catch (Exception e) {
