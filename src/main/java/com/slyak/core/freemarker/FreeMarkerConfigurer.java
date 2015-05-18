@@ -5,11 +5,16 @@ import com.slyak.core.StringUtils;
 import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
+import freemarker.template.TemplateModel;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.freemarker.SpringTemplateLoader;
+import org.springframework.util.ClassUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -25,13 +30,14 @@ import java.util.Map;
 public class FreeMarkerConfigurer extends org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer {
 
     private static final String FTLROOT_REGEX = "\\[#--\\s{1,}@ftlroot\\s{1,}\"(.*)\"\\s{1,}--\\]";
-    private static final String IMPORT_REGEX = "\\[#import ['\"](.*)['\"] as (.*)\\]";
+    private static final String IMPORT_REGEX = "\\[#import\\s{1,}['\"](.*)['\"]\\s{1,}as\\s{1,}(.*)\\]";
+    private static final String VARIABLE_REGEX = "\\[#--\\s{1,}@ftlvariable\\s{1,}name=\"(.*)\"\\s{1,}type=\"(.*)\"\\s{1,}--]";
 
     private String implicitFile = "freemarker_implicit.ftl";
 
     private String ftlroot;
     private Map<String, String> imports = Maps.newHashMap();
-    private Map<String, Object> variables = Maps.newHashMap();
+    private Map<String, String> variables = Maps.newHashMap();
 
 
     @Override
@@ -49,13 +55,11 @@ public class FreeMarkerConfigurer extends org.springframework.web.servlet.view.f
                         continue;
                     }
 
-                    List<String> importVars = StringUtils.findGroupsIfMatch(IMPORT_REGEX, line);
-                    if (CollectionUtils.isNotEmpty(importVars)) {
-                        imports.put(importVars.get(1), importVars.get(0));
+                    if (fillVariableMap(line, IMPORT_REGEX, imports)) {
                         continue;
                     }
 
-                    //TODO find variables
+                    fillVariableMap(line, VARIABLE_REGEX, variables);
                 }
                 if (ftlroot != null) {
                     templateLoaders.add(new SpringTemplateLoader(getResourceLoader(), ResourceLoader.CLASSPATH_URL_PREFIX + ftlroot));
@@ -67,11 +71,48 @@ public class FreeMarkerConfigurer extends org.springframework.web.servlet.view.f
 
     }
 
+    private boolean fillVariableMap(String line, String regex, Map<String, String> vmap) {
+        List<String> variableVars = StringUtils.findGroupsIfMatch(regex, line);
+        if (CollectionUtils.isNotEmpty(variableVars)) {
+            vmap.put(variableVars.get(0), variableVars.get(1));
+            return true;
+        }
+        return false;
+    }
+
     @Override
     protected void postProcessConfiguration(Configuration config) throws IOException, TemplateException {
         config.setObjectWrapper(new ConfigurableObjectWrapper());
         if (!imports.isEmpty()) {
-            config.setAutoImports(imports);
+            for (Map.Entry<String, String> iptEntry : imports.entrySet()) {
+                config.addAutoImport(iptEntry.getKey(), iptEntry.getValue());
+            }
+        }
+        if (!variables.isEmpty()) {
+            for (Map.Entry<String, String> valEntry : variables.entrySet()) {
+                String vname = valEntry.getKey();
+                if (config.getSharedVariableNames().contains(vname)) {
+                    continue;
+                }
+                String val = valEntry.getValue();
+                try {
+                    Class<?> aClass = ClassUtils.forName(val, ClassUtils.getDefaultClassLoader());
+                    if (TemplateModel.class.isAssignableFrom(aClass)) {
+                        config.setSharedVariable(vname, BeanUtils.instantiate(aClass));
+                    } else {
+                        Controller ctlAnn = AnnotationUtils.findAnnotation(aClass, Controller.class);
+                        if (ctlAnn == null) {
+                            //must be static methods
+
+                        } else {
+                            config.setSharedVariable(vname, new ControllerModel(aClass));
+                        }
+                    }
+
+                } catch (Exception e) {
+                    //ignore
+                }
+            }
         }
     }
 
