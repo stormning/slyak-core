@@ -3,6 +3,8 @@ package com.slyak.core.freemarker;
 import com.google.common.collect.Maps;
 import com.slyak.core.StringUtils;
 import freemarker.cache.TemplateLoader;
+import freemarker.ext.beans.BeansWrapper;
+import freemarker.ext.beans.BeansWrapperBuilder;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateModel;
@@ -39,6 +41,7 @@ public class FreeMarkerConfigurer extends org.springframework.web.servlet.view.f
     private Map<String, String> imports = Maps.newHashMap();
     private Map<String, String> variables = Maps.newHashMap();
 
+    private BeansWrapper beansWrapper = new BeansWrapperBuilder(Configuration.VERSION_2_3_21).build();
 
     @Override
     protected void postProcessTemplateLoaders(List<TemplateLoader> templateLoaders) {
@@ -55,12 +58,18 @@ public class FreeMarkerConfigurer extends org.springframework.web.servlet.view.f
                         continue;
                     }
 
-                    if (fillVariableMap(line, IMPORT_REGEX, imports)) {
+                    List<String> imps = StringUtils.findGroupsIfMatch(IMPORT_REGEX, line);
+                    if (CollectionUtils.isNotEmpty(imps)) {
+                        imports.put(imps.get(1), imps.get(0));
                         continue;
                     }
 
-                    fillVariableMap(line, VARIABLE_REGEX, variables);
+                    List<String> vals = StringUtils.findGroupsIfMatch(VARIABLE_REGEX, line);
+                    if (CollectionUtils.isNotEmpty(vals)) {
+                        variables.put(vals.get(0), vals.get(1));
+                    }
                 }
+
                 if (ftlroot != null) {
                     templateLoaders.add(new SpringTemplateLoader(getResourceLoader(), ResourceLoader.CLASSPATH_URL_PREFIX + ftlroot));
                 }
@@ -68,16 +77,6 @@ public class FreeMarkerConfigurer extends org.springframework.web.servlet.view.f
         } catch (Exception e) {
             //ignore?
         }
-
-    }
-
-    private boolean fillVariableMap(String line, String regex, Map<String, String> vmap) {
-        List<String> variableVars = StringUtils.findGroupsIfMatch(regex, line);
-        if (CollectionUtils.isNotEmpty(variableVars)) {
-            vmap.put(variableVars.get(0), variableVars.get(1));
-            return true;
-        }
-        return false;
     }
 
     @Override
@@ -91,10 +90,10 @@ public class FreeMarkerConfigurer extends org.springframework.web.servlet.view.f
         if (!variables.isEmpty()) {
             for (Map.Entry<String, String> valEntry : variables.entrySet()) {
                 String vname = valEntry.getKey();
-                if (config.getSharedVariableNames().contains(vname)) {
+                String val = valEntry.getValue();
+                if (config.getSharedVariableNames().contains(vname) || val.contains("freemarker.ext.servlet.")) {
                     continue;
                 }
-                String val = valEntry.getValue();
                 try {
                     Class<?> aClass = ClassUtils.forName(val, ClassUtils.getDefaultClassLoader());
                     if (TemplateModel.class.isAssignableFrom(aClass)) {
@@ -103,7 +102,7 @@ public class FreeMarkerConfigurer extends org.springframework.web.servlet.view.f
                         Controller ctlAnn = AnnotationUtils.findAnnotation(aClass, Controller.class);
                         if (ctlAnn == null) {
                             //must be static methods
-
+                            config.setSharedVariable(vname, beansWrapper.getStaticModels().get(val));
                         } else {
                             config.setSharedVariable(vname, new ControllerModel(aClass));
                         }
