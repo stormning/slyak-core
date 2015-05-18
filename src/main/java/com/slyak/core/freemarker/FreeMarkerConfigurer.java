@@ -31,6 +31,7 @@ public class FreeMarkerConfigurer extends org.springframework.web.servlet.view.f
 
     private String ftlroot;
     private Map<String, String> imports = Maps.newHashMap();
+    private Map<String, Object> variables = Maps.newHashMap();
 
 
     @Override
@@ -51,7 +52,10 @@ public class FreeMarkerConfigurer extends org.springframework.web.servlet.view.f
                     List<String> importVars = StringUtils.findGroupsIfMatch(IMPORT_REGEX, line);
                     if (CollectionUtils.isNotEmpty(importVars)) {
                         imports.put(importVars.get(1), importVars.get(0));
+                        continue;
                     }
+
+                    //TODO find variables
                 }
                 if (ftlroot != null) {
                     templateLoaders.add(new SpringTemplateLoader(getResourceLoader(), ResourceLoader.CLASSPATH_URL_PREFIX + ftlroot));
