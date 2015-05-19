@@ -1,13 +1,13 @@
 package com.slyak.core.freemarker;
 
 import com.slyak.core.spring.web.MvcUriComponentsBuilder;
-import freemarker.template.TemplateHashModel;
-import freemarker.template.TemplateMethodModelEx;
-import freemarker.template.TemplateModel;
-import freemarker.template.TemplateModelException;
+import freemarker.template.*;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Pageable;
+import org.springframework.ui.Model;
 import org.springframework.util.CollectionUtils;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 /**
@@ -27,11 +27,33 @@ public class ControllerModel implements TemplateMethodModelEx, TemplateHashModel
     }
 
     public Object exec(List list) throws TemplateModelException {
-        Object[] args = new Object[0];
-        if (!CollectionUtils.isEmpty(list)) {
-            args = list.toArray(new Object[list.size()]);
+        Method method = BeanUtils.findMethodWithMinimalParameters(controller, methodName);
+        Class<?>[] types = method.getParameterTypes();
+
+        Object[] args = new Object[types.length];
+        boolean empty = CollectionUtils.isEmpty(list);
+        int idx = 0;
+        for (int i = 0; i < types.length; i++) {
+            Class typeClass = types[i];
+            if (empty || Model.class.isAssignableFrom(typeClass) || Pageable.class.isAssignableFrom(typeClass)) {
+                args[i] = null;
+            } else {
+                TemplateModel argModel = (TemplateModel) list.get(idx);
+                if (argModel instanceof TemplateScalarModel) {
+                    args[i] = ((TemplateScalarModel) argModel).getAsString();
+                    idx++;
+                } else if (argModel instanceof TemplateNumberModel) {
+                    args[i] = ((TemplateNumberModel) argModel).getAsNumber();
+                    idx++;
+                } else if (argModel instanceof TemplateBooleanModel) {
+                    args[i] = ((TemplateBooleanModel) argModel).getAsBoolean();
+                    idx++;
+                } else {
+                    args[i] = null;
+                }
+            }
         }
-        return MvcUriComponentsBuilder.fromMethod(BeanUtils.findMethodWithMinimalParameters(controller, methodName), args).toUriString();
+        return MvcUriComponentsBuilder.fromMethod(method, args).toUriString();
     }
 
     @Override
