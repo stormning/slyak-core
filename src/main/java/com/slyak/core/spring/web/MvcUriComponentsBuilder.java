@@ -88,7 +88,7 @@ public class MvcUriComponentsBuilder extends UriComponentsBuilder {
         Assert.notNull(controllerType, "'controllerType' must not be null");
         RequestMapping annot = AnnotationUtils.findAnnotation(controllerType, RequestMapping.class);
         if (annot == null || ObjectUtils.isEmpty(annot.value()) || StringUtils.isEmpty(annot.value()[0])) {
-            return "/";
+            return org.apache.commons.lang3.StringUtils.uncapitalize(org.apache.commons.lang3.StringUtils.replaceEach(ClassUtils.getShortName(controllerType), RequestMappingHandlerMapping.CONTROLLER_SUFFIXES, new String[]{"", ""}));
         }
         if (annot.value().length > 1 && logger.isWarnEnabled()) {
             logger.warn("Multiple paths on controller " + controllerType.getName() + ", using first one");
@@ -256,11 +256,8 @@ public class MvcUriComponentsBuilder extends UriComponentsBuilder {
 
     private static String getMethodRequestMapping(Method method) {
         RequestMapping annot = AnnotationUtils.findAnnotation(method, RequestMapping.class);
-        if (annot == null) {
-            throw new IllegalArgumentException("No @RequestMapping on: " + method.toGenericString());
-        }
-        if (ObjectUtils.isEmpty(annot.value()) || StringUtils.isEmpty(annot.value()[0])) {
-            return "/";
+        if (annot == null || ObjectUtils.isEmpty(annot.value()) || StringUtils.isEmpty(annot.value()[0])) {
+            return method.getName();
         }
         if (annot.value().length > 1 && logger.isWarnEnabled()) {
             logger.warn("Multiple paths on method " + method.toGenericString() + ", using first one");

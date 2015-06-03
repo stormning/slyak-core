@@ -21,7 +21,7 @@ import java.lang.reflect.Method;
  */
 public class RequestMappingHandlerMapping extends org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping {
 
-    private String[] controllerSuffixes = new String[]{"Controller", "Ctl"};
+    public static final String[] CONTROLLER_SUFFIXES = new String[]{"Controller", "Ctl"};
 
     @Override
     protected RequestMappingInfo getMappingForMethod(Method method, Class<?> handlerType) {
@@ -41,7 +41,7 @@ public class RequestMappingHandlerMapping extends org.springframework.web.servle
             Controller ctlAnnotation = AnnotationUtils.findAnnotation(handlerType, Controller.class);
             String pattern = ctlAnnotation.value();
             if (StringUtils.isBlank(pattern)) {
-                pattern = StringUtils.replaceEach(ClassUtils.getShortName(handlerType), controllerSuffixes, new String[]{"", ""});
+                pattern = StringUtils.replaceEach(ClassUtils.getShortName(handlerType), CONTROLLER_SUFFIXES, new String[]{"", ""});
             }
             //first character to lowercase
             pattern = StringUtils.uncapitalize(pattern);

@@ -31,25 +31,22 @@ public class ControllerModel implements TemplateMethodModelEx, TemplateHashModel
         Class<?>[] types = method.getParameterTypes();
 
         Object[] args = new Object[types.length];
-        boolean empty = CollectionUtils.isEmpty(list);
-        int idx = 0;
-        for (int i = 0; i < types.length; i++) {
-            Class typeClass = types[i];
-            if (empty || Model.class.isAssignableFrom(typeClass) || Pageable.class.isAssignableFrom(typeClass)) {
-                args[i] = null;
-            } else {
-                TemplateModel argModel = (TemplateModel) list.get(idx);
-                if (argModel instanceof TemplateScalarModel) {
-                    args[i] = ((TemplateScalarModel) argModel).getAsString();
-                    idx++;
-                } else if (argModel instanceof TemplateNumberModel) {
-                    args[i] = ((TemplateNumberModel) argModel).getAsNumber();
-                    idx++;
-                } else if (argModel instanceof TemplateBooleanModel) {
-                    args[i] = ((TemplateBooleanModel) argModel).getAsBoolean();
-                    idx++;
-                } else {
+        if (!CollectionUtils.isEmpty(list)) {
+            for (int i = 0; i < types.length; i++) {
+                Class typeClass = types[i];
+                if (Model.class.isAssignableFrom(typeClass) || Pageable.class.isAssignableFrom(typeClass)) {
                     args[i] = null;
+                } else {
+                    TemplateModel argModel = (TemplateModel) list.get(i);
+                    if (argModel instanceof TemplateScalarModel) {
+                        args[i] = ((TemplateScalarModel) argModel).getAsString();
+                    } else if (argModel instanceof TemplateNumberModel) {
+                        args[i] = ((TemplateNumberModel) argModel).getAsNumber();
+                    } else if (argModel instanceof TemplateBooleanModel) {
+                        args[i] = ((TemplateBooleanModel) argModel).getAsBoolean();
+                    } else {
+                        args[i] = null;
+                    }
                 }
             }
         }

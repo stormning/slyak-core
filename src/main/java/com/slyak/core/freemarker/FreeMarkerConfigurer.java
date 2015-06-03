@@ -91,6 +91,10 @@ public class FreeMarkerConfigurer extends org.springframework.web.servlet.view.f
             for (Map.Entry<String, String> valEntry : variables.entrySet()) {
                 String vname = valEntry.getKey();
                 String val = valEntry.getValue();
+                if (vname.equalsIgnoreCase("null")) {
+                    config.setSharedVariable(vname, TemplateModel.NOTHING);
+                    continue;
+                }
                 if (config.getSharedVariableNames().contains(vname) || val.contains("freemarker.ext.servlet.")) {
                     continue;
                 }
