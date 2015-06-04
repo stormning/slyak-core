@@ -35,7 +35,7 @@ public class FreeMarkerConfigurer extends org.springframework.web.servlet.view.f
     private static final String IMPORT_REGEX = "\\[#import\\s{1,}['\"](.*)['\"]\\s{1,}as\\s{1,}(.*)\\]";
     private static final String VARIABLE_REGEX = "\\[#--\\s{1,}@ftlvariable\\s{1,}name=\"(.*)\"\\s{1,}type=\"(.*)\"\\s{1,}--]";
 
-    private String implicitFile = "freemarker_implicit.ftl";
+    private String implicitFile = "classpath:freemarker_implicit.ftl";
 
     private String ftlroot;
     private Map<String, String> imports = Maps.newHashMap();
@@ -47,7 +47,7 @@ public class FreeMarkerConfigurer extends org.springframework.web.servlet.view.f
     protected void postProcessTemplateLoaders(List<TemplateLoader> templateLoaders) {
         super.postProcessTemplateLoaders(templateLoaders);
         try {
-            Resource resource = getResourceLoader().getResource(ResourceLoader.CLASSPATH_URL_PREFIX + implicitFile);
+            Resource resource = getResourceLoader().getResource(implicitFile);
             if (resource.exists()) {
                 List<String> lines = IOUtils.readLines(resource.getInputStream());
                 for (String line : lines) {
