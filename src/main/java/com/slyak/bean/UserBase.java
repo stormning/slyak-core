@@ -14,7 +14,10 @@
 
 package com.slyak.bean;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 import java.io.Serializable;
 
 /**
@@ -25,7 +28,7 @@ import java.io.Serializable;
  * @version V1.0, 2014/11/20
  */
 @MappedSuperclass
-public class UserBase implements Serializable{
+public abstract class UserBase implements Serializable {
 
     @Id
     @GeneratedValue
