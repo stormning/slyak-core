@@ -34,15 +34,16 @@ public abstract class UserBase implements Serializable {
     @GeneratedValue
     private Long id;
 
-    @Column(length = 64)
+    @Column(length = 64, nullable = false)
     private String name;
 
-    @Column(length = 64)
+    @Column(length = 64, nullable = false)
     private String password;
 
-    @Column
+    @Column(nullable = false)
     private Gender gender;
 
+    @Column(nullable = false)
     private long avatar;
 
     public Long getId() {
