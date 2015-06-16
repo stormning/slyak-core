@@ -25,7 +25,7 @@ import java.io.Serializable;
  * @version V1.0, 2014/11/20
  */
 @MappedSuperclass
-public abstract class User implements Serializable{
+public class UserBase implements Serializable{
 
     @Id
     @GeneratedValue
