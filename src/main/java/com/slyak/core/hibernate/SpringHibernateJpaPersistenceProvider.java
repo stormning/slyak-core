@@ -5,6 +5,7 @@ import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl;
 import org.hibernate.jpa.boot.internal.PersistenceUnitInfoDescriptor;
 import org.hibernate.service.ServiceRegistry;
+import org.springframework.beans.BeanUtils;
 import org.springframework.orm.jpa.persistenceunit.SmartPersistenceUnitInfo;
 
 import javax.persistence.EntityManagerFactory;
@@ -22,7 +23,7 @@ public class SpringHibernateJpaPersistenceProvider extends HibernatePersistenceP
     @Override
     @SuppressWarnings("rawtypes")
     public EntityManagerFactory createContainerEntityManagerFactory(final PersistenceUnitInfo info, Map properties) {
-        return new EntityManagerFactoryBuilderImpl(new PersistenceUnitInfoDescriptor(info), properties) {
+        EntityManagerFactoryBuilderImpl emfbi = new EntityManagerFactoryBuilderImpl(new PersistenceUnitInfoDescriptor(info), properties) {
             @Override
             public Configuration buildHibernateConfiguration(ServiceRegistry serviceRegistry) {
                 Configuration configuration = super.buildHibernateConfiguration(serviceRegistry);
@@ -31,9 +32,14 @@ public class SpringHibernateJpaPersistenceProvider extends HibernatePersistenceP
                         configuration.addPackage(managedPackage);
                     }
                 }
-                HibernateContext.configuration = configuration;
                 return configuration;
             }
-        }.build();
+        };
+        EntityManagerFactory emf = emfbi.build();
+        Configuration src = emfbi.getHibernateConfiguration();
+        Configuration copy = new Configuration();
+        BeanUtils.copyProperties(src,copy);
+        HibernateContext.setConfiguration(copy);
+        return emf;
     }
 }
