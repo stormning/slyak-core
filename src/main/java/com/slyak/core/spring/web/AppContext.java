@@ -6,9 +6,15 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.HandlerExecutionChain;
+import org.springframework.web.servlet.mvc.condition.PatternsRequestCondition;
+import org.springframework.web.servlet.mvc.condition.RequestCondition;
+import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 /**
  * .
@@ -40,5 +46,39 @@ public class AppContext implements ApplicationContextAware {
 
     public static HttpServletResponse getResponse() {
         return getServletRequestAttributes().getResponse();
+    }
+
+    public static RequestCondition<RequestMappingInfo> getRequestCondition() {
+        try {
+            RequestMappingHandlerMapping rmh = getApplicationContext().getBean(RequestMappingHandlerMapping.class);
+            HandlerExecutionChain hec = rmh.getHandler(AppContext.getRequest());
+            HandlerMethod handlerMethod = (HandlerMethod) hec.getHandler();
+            Map<RequestMappingInfo, HandlerMethod> handlerMethods = rmh.getHandlerMethods();
+            for (Map.Entry<RequestMappingInfo, HandlerMethod> rmie : handlerMethods.entrySet()) {
+                if (rmie.getValue() == handlerMethod) {
+                    return rmie.getKey();
+                }
+            }
+        } catch (Exception e) {
+            return null;
+        }
+        return null;
+    }
+
+    public static boolean urlMath(String url, RequestCondition<RequestMappingInfo> rc) {
+        try {
+            return rc.compareTo(createRmi(url), AppContext.getRequest()) == 0;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private static RequestMappingInfo createRmi(String url) {
+        PatternsRequestCondition prc = new PatternsRequestCondition(url);
+        return new RequestMappingInfo(prc, null, null, null, null, null, null);
+    }
+
+    public static boolean urlMathCurrentRequest(String url) {
+        return urlMath(url, getRequestCondition());
     }
 }

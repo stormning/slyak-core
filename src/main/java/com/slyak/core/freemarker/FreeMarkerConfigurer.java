@@ -108,7 +108,7 @@ public class FreeMarkerConfigurer extends org.springframework.web.servlet.view.f
                     if (TemplateModel.class.isAssignableFrom(aClass) || AnnotationUtils.findAnnotation(aClass, Ftm.class) != null) {
                         Object instantiate = BeanUtils.instantiate(aClass);
                         //autowire
-                        wac.getAutowireCapableBeanFactory().autowireBean(instantiate);
+//                        wac.getAutowireCapableBeanFactory().autowireBean(instantiate);
                         config.setSharedVariable(vname, instantiate);
                     } else {
                         Controller ctlAnn = AnnotationUtils.findAnnotation(aClass, Controller.class);
