@@ -100,7 +100,7 @@ public class FreeMarkerConfigurer extends org.springframework.web.servlet.view.f
                 }
                 try {
                     Class<?> aClass = ClassUtils.forName(val, ClassUtils.getDefaultClassLoader());
-                    if (TemplateModel.class.isAssignableFrom(aClass)) {
+                    if (TemplateModel.class.isAssignableFrom(aClass) || AnnotationUtils.findAnnotation(aClass, Ftm.class) != null) {
                         config.setSharedVariable(vname, BeanUtils.instantiate(aClass));
                     } else {
                         Controller ctlAnn = AnnotationUtils.findAnnotation(aClass, Controller.class);
