@@ -17,7 +17,10 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.freemarker.SpringTemplateLoader;
 import org.springframework.util.ClassUtils;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import javax.servlet.ServletContext;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +45,8 @@ public class FreeMarkerConfigurer extends org.springframework.web.servlet.view.f
     private Map<String, String> variables = Maps.newHashMap();
 
     private BeansWrapper beansWrapper = new BeansWrapperBuilder(Configuration.VERSION_2_3_21).build();
+
+    private WebApplicationContext wac;
 
     @Override
     protected void postProcessTemplateLoaders(List<TemplateLoader> templateLoaders) {
@@ -101,7 +106,10 @@ public class FreeMarkerConfigurer extends org.springframework.web.servlet.view.f
                 try {
                     Class<?> aClass = ClassUtils.forName(val, ClassUtils.getDefaultClassLoader());
                     if (TemplateModel.class.isAssignableFrom(aClass) || AnnotationUtils.findAnnotation(aClass, Ftm.class) != null) {
-                        config.setSharedVariable(vname, BeanUtils.instantiate(aClass));
+                        Object instantiate = BeanUtils.instantiate(aClass);
+                        //autowire
+                        wac.getAutowireCapableBeanFactory().autowireBean(instantiate);
+                        config.setSharedVariable(vname, instantiate);
                     } else {
                         Controller ctlAnn = AnnotationUtils.findAnnotation(aClass, Controller.class);
                         if (ctlAnn == null) {
@@ -121,5 +129,11 @@ public class FreeMarkerConfigurer extends org.springframework.web.servlet.view.f
 
     public void setImplicitFile(String implicitFile) {
         this.implicitFile = implicitFile;
+    }
+
+    @Override
+    public void setServletContext(ServletContext servletContext) {
+        super.setServletContext(servletContext);
+        wac = WebApplicationContextUtils.getWebApplicationContext(servletContext);
     }
 }
