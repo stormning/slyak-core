@@ -55,7 +55,8 @@ public class AppContext implements ApplicationContextAware {
             HandlerMethod handlerMethod = (HandlerMethod) hec.getHandler();
             Map<RequestMappingInfo, HandlerMethod> handlerMethods = rmh.getHandlerMethods();
             for (Map.Entry<RequestMappingInfo, HandlerMethod> rmie : handlerMethods.entrySet()) {
-                if (rmie.getValue() == handlerMethod) {
+                HandlerMethod hm = rmie.getValue();
+                if (hm.getBeanType() == handlerMethod.getBean().getClass() && hm.getMethod().getName().equals(handlerMethod.getMethod().getName())) {
                     return rmie.getKey();
                 }
             }
