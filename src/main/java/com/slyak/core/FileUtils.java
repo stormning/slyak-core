@@ -12,7 +12,7 @@ import java.util.Map;
  * @author <a href="mailto:stormning@163.com">stormning</a>
  * @version V1.0, 2015/6/23
  */
-public class FileUtils {
+public class FileUtils extends org.apache.commons.io.FileUtils{
 
     private static Map<String, Long> fileLastModifiedCache = Maps.newConcurrentMap();
 
