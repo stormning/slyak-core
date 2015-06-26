@@ -25,7 +25,7 @@ public class BizFetcher<T extends BizKey<K>, K extends Serializable> {
     }
 
     public T get(BizKey<K> bizKey) {
-        return (T) getBizRepo(bizKey).findOne(bizKey);
+        return getBizRepo(bizKey).findOne(bizKey);
     }
 
     public Map<BizKey<K>, T> mget(Collection<BizKey<K>> keys) {
