@@ -13,15 +13,15 @@ import java.io.Serializable;
  * @version V1.0, 2015/6/25
  */
 @MappedSuperclass
-public class BizKey<ID extends Serializable> implements Serializable, Bizable {
+public class BizKey<K extends Serializable> implements Serializable, Bizable {
     @Id
     private int biz;
 
     @Id
     @Column(name = "biz_id")
-    private ID bizId;
+    private K bizId;
 
-    public BizKey(int biz, ID bizId) {
+    public BizKey(int biz, K bizId) {
         this.biz = biz;
         this.bizId = bizId;
     }
@@ -34,15 +34,15 @@ public class BizKey<ID extends Serializable> implements Serializable, Bizable {
         this.biz = biz;
     }
 
-    public ID getBizId() {
+    public K getBizId() {
         return bizId;
     }
 
-    public void setBizId(ID bizId) {
+    public void setBizId(K bizId) {
         this.bizId = bizId;
     }
 
-    public BizKey<ID> getBizKey(){
+    public BizKey<K> getBizKey() {
         return this;
     }
 

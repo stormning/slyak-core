@@ -14,7 +14,9 @@
 
 package com.slyak.bean;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.IdClass;
+import javax.persistence.Table;
 
 /**
  * .
@@ -26,5 +28,5 @@ import javax.persistence.*;
 @Entity
 @Table(name = "t_user_role")
 @IdClass(UserRolePK.class)
-public class UserRole extends UserRolePK{
+public class UserRole extends UserRolePK {
 }

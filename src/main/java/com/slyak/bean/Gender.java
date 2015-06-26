@@ -22,5 +22,5 @@ package com.slyak.bean;
  * @version V1.0, 2014/11/20
  */
 public enum Gender {
-    MALE,FEMALE,UNKONOWN
+    MALE, FEMALE, UNKONOWN
 }

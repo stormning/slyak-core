@@ -28,6 +28,6 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "t_role_permission")
 @IdClass(RolePermissionPK.class)
-public class RolePermission extends RolePermissionPK{
+public class RolePermission extends RolePermissionPK {
 
 }

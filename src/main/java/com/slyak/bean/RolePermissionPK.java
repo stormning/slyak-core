@@ -27,7 +27,7 @@ import java.io.Serializable;
  * @version V1.0, 2014/11/20
  */
 @MappedSuperclass
-public class RolePermissionPK implements Serializable{
+public class RolePermissionPK implements Serializable {
 
     @Id
     @Column(length = 30)
