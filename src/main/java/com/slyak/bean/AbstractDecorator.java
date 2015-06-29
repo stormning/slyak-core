@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * .
+ * 将decorator添加到Entity的listener实现自动装配一些额外属性.
  * <p/>
  *
  * @author <a href="mailto:stormning@163.com">stormning</a>
