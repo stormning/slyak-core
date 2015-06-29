@@ -18,16 +18,16 @@ import java.util.Set;
  * @author <a href="mailto:stormning@163.com">stormning</a>
  * @version V1.0, 2015/6/26
  */
-public abstract class AbstractDecorator<S, K, T> {
+public abstract class AbstractDecorator<S> {
 
-    private List<Assembler<S, K, T>> assemblers;
+    private List<Assembler> assemblers;
 
     public AbstractDecorator() {
         assemblers = Lists.newArrayList();
         initAssemblers(assemblers);
     }
 
-    abstract void initAssemblers(List<Assembler<S, K, T>> assemblers);
+    abstract void initAssemblers(List<Assembler> assemblers);
 
     public void decorate(S source) {
         if (source != null) {
@@ -43,21 +43,21 @@ public abstract class AbstractDecorator<S, K, T> {
 
     public void decorate(List<S> items) {
         if (!CollectionUtils.isEmpty(items) && !CollectionUtils.isEmpty(assemblers)) {
-            Map<K, S> keyItems = Maps.newHashMap();
-            for (Assembler<S, K, T> assembler : assemblers) {
-                Set<K> keys = Sets.newHashSet();
+            Map<Object, S> keyItems = Maps.newHashMap();
+            for (Assembler assembler : assemblers) {
+                Set<Object> keys = Sets.newHashSet();
                 for (S item : items) {
-                    K key = assembler.getKey(item);
+                    Object key = assembler.getKey(item);
                     keys.add(key);
                     keyItems.put(key, item);
                 }
                 if (keys.size() == 1) {
-                    K key = keys.iterator().next();
-                    T t = assembler.get(key);
+                    Object key = keys.iterator().next();
+                    Object t = assembler.get(key);
                     assembler.assemble(keyItems.get(key), t);
                 } else {
-                    Map<K, T> targets = assembler.mget(keys);
-                    for (Map.Entry<K, T> kte : targets.entrySet()) {
+                    Map<Object, Object> targets = assembler.mget(keys);
+                    for (Map.Entry<Object, Object> kte : targets.entrySet()) {
                         assembler.assemble(keyItems.get(kte.getKey()), kte.getValue());
                     }
                 }
