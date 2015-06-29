@@ -2,6 +2,7 @@ package com.slyak.bean;
 
 import com.slyak.core.hibernate.JSONType;
 import org.hibernate.annotations.Type;
+import org.springframework.data.jpa.domain.AbstractAuditable;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
@@ -16,7 +17,7 @@ import java.util.List;
  * @version V1.0, 2015/2/2
  */
 @MappedSuperclass
-public class Summary extends AuditableBase implements Serializable {
+public class Summary extends AbstractAuditable<Long, Long> implements Serializable {
 
     @Column(nullable = false)
     private String title;

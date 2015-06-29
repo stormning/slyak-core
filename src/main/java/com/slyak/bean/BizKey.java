@@ -1,6 +1,7 @@
 package com.slyak.bean;
 
-import javax.persistence.Column;
+import org.springframework.data.jpa.domain.AbstractPersistable;
+
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import java.io.Serializable;
@@ -13,19 +14,11 @@ import java.io.Serializable;
  * @version V1.0, 2015/6/25
  */
 @MappedSuperclass
-public class BizKey<K extends Serializable> implements Serializable, Bizable {
+public class BizKey<PK extends Serializable> extends AbstractPersistable<PK> implements Serializable, Bizable {
     @Id
     private int biz;
 
-    @Id
-    @Column(name = "biz_id")
-    private K bizId;
-
-    public BizKey(int biz, K bizId) {
-        this.biz = biz;
-        this.bizId = bizId;
-    }
-
+    @Override
     public int getBiz() {
         return biz;
     }
@@ -34,35 +27,12 @@ public class BizKey<K extends Serializable> implements Serializable, Bizable {
         this.biz = biz;
     }
 
-    public K getBizId() {
-        return bizId;
+    public BizKey(int biz, PK id) {
+        super();
+        setId(id);
     }
 
-    public void setBizId(K bizId) {
-        this.bizId = bizId;
-    }
-
-    public BizKey<K> getBizKey() {
+    public BizKey getBizKey(){
         return this;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof BizKey)) return false;
-
-        BizKey bizKey = (BizKey) o;
-
-        if (biz != bizKey.biz) return false;
-        if (bizId != null ? !bizId.equals(bizKey.bizId) : bizKey.bizId != null) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = biz;
-        result = 31 * result + (bizId != null ? bizId.hashCode() : 0);
-        return result;
     }
 }
