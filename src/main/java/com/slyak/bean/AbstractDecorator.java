@@ -27,7 +27,7 @@ public abstract class AbstractDecorator<S> {
         initAssemblers(assemblers);
     }
 
-    abstract void initAssemblers(List<Assembler> assemblers);
+    protected abstract void initAssemblers(List<Assembler> assemblers);
 
     public void decorate(S source) {
         if (source != null) {
