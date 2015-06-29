@@ -4,7 +4,9 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.springframework.data.domain.Page;
+import org.springframework.util.CollectionUtils;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,43 +29,39 @@ public abstract class AbstractDecorator<S, K, T> {
 
     abstract void initAssemblers(List<Assembler<S, K, T>> assemblers);
 
+    public void decorate(S source) {
+        if (source != null) {
+            decorate(Collections.singletonList(source));
+        }
+    }
+
     public void decorate(Page<S> page) {
-        decorate(page.getContent());
+        if (page != null) {
+            decorate(page.getContent());
+        }
     }
 
     public void decorate(List<S> items) {
-        Map<Assembler<S, K, T>, Set<K>> assemblerKeys = Maps.newHashMap();
-        for (S item : items) {
+        if (!CollectionUtils.isEmpty(items)) {
+            Map<K, S> keyItems = Maps.newHashMap();
             for (Assembler<S, K, T> assembler : assemblers) {
-                K key = assembler.getKey(item);
-                Set<K> ks = assemblerKeys.get(key);
-                if (ks == null) {
-                    ks = Sets.newHashSet();
+                Set<K> keys = Sets.newHashSet();
+                for (S item : items) {
+                    K key = assembler.getKey(item);
+                    keys.add(key);
+                    keyItems.put(key, item);
                 }
-                ks.add(key);
+                if (keys.size() == 1) {
+                    K key = keys.iterator().next();
+                    T t = assembler.get(key);
+                    assembler.assemble(keyItems.get(key), t);
+                } else {
+                    Map<K, T> targets = assembler.mget(keys);
+                    for (Map.Entry<K, T> kte : targets.entrySet()) {
+                        assembler.assemble(keyItems.get(kte.getKey()), kte.getValue());
+                    }
+                }
             }
         }
-
-        for (Map.Entry<Assembler<S, K, T>, Set<K>> asse : assemblerKeys.entrySet()) {
-            Assembler<S, K, T> assembler = asse.getKey();
-            Set<K> ks = asse.getValue();
-            Map<K, T> targets = Maps.newHashMap();
-            if (ks.size() == 1) {
-                K key = ks.iterator().next();
-                targets.put(key, assembler.get(key));
-            } else {
-                targets = assembler.mget(ks);
-            }
-        }
-
-//        assembler.assemble()
-//        for (Assembler<S, K,T> assembler : assemblers) {
-//            Set<K> ks = assemblerKeys.get(assembler);
-//            if (ks != null) {
-//                if (ks.size() == 1){
-//                    assembler.assemble()
-//                }
-//            }
-//        }
     }
 }

@@ -17,9 +17,12 @@ import java.util.Map;
  * @param <T> target
  */
 public interface Assembler<S, K, T> {
+
     K getKey(S source);
 
     T get(K key);
 
     Map<K, T> mget(Collection<K> keys);
+
+    void assemble(S source, T target);
 }
