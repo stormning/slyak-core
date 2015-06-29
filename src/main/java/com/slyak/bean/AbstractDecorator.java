@@ -42,7 +42,7 @@ public abstract class AbstractDecorator<S, K, T> {
     }
 
     public void decorate(List<S> items) {
-        if (!CollectionUtils.isEmpty(items)) {
+        if (!CollectionUtils.isEmpty(items) && !CollectionUtils.isEmpty(assemblers)) {
             Map<K, S> keyItems = Maps.newHashMap();
             for (Assembler<S, K, T> assembler : assemblers) {
                 Set<K> keys = Sets.newHashSet();
