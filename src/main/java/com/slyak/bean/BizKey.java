@@ -29,6 +29,7 @@ public class BizKey<PK extends Serializable> extends AbstractPersistable<PK> imp
 
     public BizKey(int biz, PK id) {
         super();
+        setBiz(biz);
         setId(id);
     }
 
