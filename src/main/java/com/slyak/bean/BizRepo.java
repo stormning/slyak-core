@@ -3,8 +3,6 @@ package com.slyak.bean;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
-import java.io.Serializable;
-
 /**
  * .
  * <p/>
@@ -13,6 +11,6 @@ import java.io.Serializable;
  * @version V1.0, 2015/6/26
  */
 @NoRepositoryBean
-public interface BizRepo<T extends BizKey<K>, K extends Serializable> extends JpaRepository<T, BizKey<K>> {
+public interface BizRepo<T extends BizKey> extends JpaRepository<T, BizKey> {
 
 }

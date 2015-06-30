@@ -1,8 +1,11 @@
 package com.slyak.bean;
 
-import org.springframework.data.jpa.domain.AbstractPersistable;
+import org.springframework.data.domain.Persistable;
 
-import javax.persistence.*;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 import java.io.Serializable;
 
 /**
@@ -13,9 +16,34 @@ import java.io.Serializable;
  * @version V1.0, 2015/6/25
  */
 @MappedSuperclass
-public abstract class BizKey<PK extends Serializable> extends AbstractPersistable<PK> implements Serializable, Bizable {
+public class BizKey implements Serializable, Bizable, Persistable<Long> {
     @Id
     private int biz;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
+    public BizKey(int biz, Long id) {
+        this.biz = biz;
+        this.id = id;
+    }
+
+    public BizKey getBizKey() {
+        return this;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    protected void setId(final Long id) {
+        this.id = id;
+    }
+
+    public boolean isNew() {
+        return null == getId();
+    }
 
     @Override
     public int getBiz() {
@@ -26,13 +54,23 @@ public abstract class BizKey<PK extends Serializable> extends AbstractPersistabl
         this.biz = biz;
     }
 
-    public BizKey(int biz, PK id) {
-        super();
-        setBiz(biz);
-        setId(id);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BizKey)) return false;
+
+        BizKey bizKey = (BizKey) o;
+
+        if (biz != bizKey.biz) return false;
+        if (id != null ? !id.equals(bizKey.id) : bizKey.id != null) return false;
+
+        return true;
     }
 
-    public BizKey getBizKey(){
-        return this;
+    @Override
+    public int hashCode() {
+        int result = biz;
+        result = 31 * result + (id != null ? id.hashCode() : 0);
+        return result;
     }
 }
