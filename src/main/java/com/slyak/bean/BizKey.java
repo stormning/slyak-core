@@ -2,8 +2,7 @@ package com.slyak.bean;
 
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import java.io.Serializable;
 
 /**
@@ -14,7 +13,7 @@ import java.io.Serializable;
  * @version V1.0, 2015/6/25
  */
 @MappedSuperclass
-public class BizKey<PK extends Serializable> extends AbstractPersistable<PK> implements Serializable, Bizable {
+public abstract class BizKey<PK extends Serializable> extends AbstractPersistable<PK> implements Serializable, Bizable {
     @Id
     private int biz;
 
