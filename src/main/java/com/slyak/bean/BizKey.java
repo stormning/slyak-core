@@ -24,6 +24,10 @@ public class BizKey implements Serializable, Bizable, Persistable<Long> {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    public BizKey(){
+
+    }
+
     public BizKey(int biz, Long id) {
         this.biz = biz;
         this.id = id;

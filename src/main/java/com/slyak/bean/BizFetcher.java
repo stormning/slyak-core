@@ -3,10 +3,19 @@ package com.slyak.bean;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.slyak.core.RepoUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Component;
+import org.springframework.util.ReflectionUtils;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.metamodel.ManagedType;
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * .
@@ -15,13 +24,13 @@ import java.util.Map;
  * @author <a href="mailto:stormning@163.com">stormning</a>
  * @version V1.0, 2015/6/26
  */
-public class BizFetcher<T extends BizKey> {
+@Component
+public class BizFetcher<T extends BizKey> implements InitializingBean{
 
-    private Map<Integer, T> bizDomainClasses;
+    @PersistenceContext
+    private EntityManager em;
 
-    public void setBizDomainClasses(Map<Integer, T> bizDomainClasses) {
-        this.bizDomainClasses = bizDomainClasses;
-    }
+    private Map<Integer, Class<?>> bizDomainClasses = Maps.newHashMap();
 
     public T get(BizKey bizKey) {
         return getBizRepo(bizKey).findOne(bizKey);
@@ -54,5 +63,19 @@ public class BizFetcher<T extends BizKey> {
 
     private CrudRepository<T, BizKey> getBizRepo(BizKey bizKey) {
         return getBizRepo(bizKey.getBiz());
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        Set<ManagedType<?>> managedTypes = em.getMetamodel().getManagedTypes();
+        for (ManagedType<?> mt : managedTypes) {
+            Class<?> javaType = mt.getJavaType();
+            if (BizKey.class.isAssignableFrom(javaType)){
+                Object instantiate = BeanUtils.instantiate(javaType);
+                Method getBizMethod = ReflectionUtils.findMethod(javaType, "getBiz");
+                Integer biz = (Integer) ReflectionUtils.invokeMethod(getBizMethod, instantiate);
+                bizDomainClasses.put(biz,javaType);
+            }
+        }
     }
 }
