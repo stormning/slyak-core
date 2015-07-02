@@ -25,7 +25,7 @@ import java.util.Set;
  * @version V1.0, 2015/6/26
  */
 @Component
-public class BizFetcher<T extends BizKey> implements InitializingBean{
+public class BizFetcher<T extends BizKey> implements InitializingBean {
 
     @PersistenceContext
     private EntityManager em;
@@ -70,11 +70,13 @@ public class BizFetcher<T extends BizKey> implements InitializingBean{
         Set<ManagedType<?>> managedTypes = em.getMetamodel().getManagedTypes();
         for (ManagedType<?> mt : managedTypes) {
             Class<?> javaType = mt.getJavaType();
-            if (BizKey.class.isAssignableFrom(javaType)){
+            if (BizKey.class.isAssignableFrom(javaType)) {
                 Object instantiate = BeanUtils.instantiate(javaType);
                 Method getBizMethod = ReflectionUtils.findMethod(javaType, "getBiz");
                 Integer biz = (Integer) ReflectionUtils.invokeMethod(getBizMethod, instantiate);
-                bizDomainClasses.put(biz,javaType);
+                if (biz != null) {
+                    bizDomainClasses.put(biz, javaType);
+                }
             }
         }
     }
