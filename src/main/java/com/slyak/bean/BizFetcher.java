@@ -25,7 +25,7 @@ import java.util.Set;
  * @version V1.0, 2015/6/26
  */
 @Component
-public class BizFetcher<T extends BizKey> implements InitializingBean {
+public class BizFetcher<T extends Bizable> implements InitializingBean {
 
     @PersistenceContext
     private EntityManager em;
@@ -51,7 +51,8 @@ public class BizFetcher<T extends BizKey> implements InitializingBean {
         for (Map.Entry<Integer, Collection<BizKey>> bize : bizs.entrySet()) {
             Iterable<T> objs = getBizRepo(bize.getKey()).findAll(bize.getValue());
             for (T obj : objs) {
-                result.put(obj.getBizKey(), obj);
+                obj.getBiz();
+                result.put(new BizKey(obj.getBiz(), obj.getId()), obj);
             }
         }
         return result;

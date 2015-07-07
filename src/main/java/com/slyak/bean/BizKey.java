@@ -1,7 +1,5 @@
 package com.slyak.bean;
 
-import org.springframework.data.domain.Persistable;
-
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -16,7 +14,7 @@ import java.io.Serializable;
  * @version V1.0, 2015/6/25
  */
 @MappedSuperclass
-public class BizKey implements Serializable, Bizable, Persistable<Long> {
+public class BizKey implements Serializable, Bizable {
     @Id
     private int biz;
 

@@ -24,7 +24,7 @@ import javax.persistence.*;
  * @version V1.0, 2014/11/19
  */
 @MappedSuperclass
-public class Content extends Summary implements Bodyable {
+abstract class Content extends Summary implements Bodyable {
 
     @Basic(fetch = FetchType.LAZY)
     @Lob
