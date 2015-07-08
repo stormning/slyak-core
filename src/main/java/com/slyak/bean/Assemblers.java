@@ -26,7 +26,7 @@ public class Assemblers<S, K, V> {
     }
 
     public void assemble(List<S> sources) {
-        if (!CollectionUtils.isEmpty(sources) && assemblers.size() > 0) {
+        if (!CollectionUtils.isEmpty(sources) && !CollectionUtils.isEmpty(assemblers)) {
             if (sources.size() == 1) {
                 assemble(sources.get(0));
             } else {
@@ -46,7 +46,7 @@ public class Assemblers<S, K, V> {
     }
 
     public void assemble(S source) {
-        if (source != null) {
+        if (source != null && !CollectionUtils.isEmpty(assemblers)) {
             for (Assembler<S, K, V> assembler : assemblers) {
                 K id = assembler.getKey(source);
                 V target = assembler.get(id);
