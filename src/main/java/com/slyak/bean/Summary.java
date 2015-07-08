@@ -16,7 +16,7 @@ import java.util.List;
  * @version V1.0, 2015/2/2
  */
 @MappedSuperclass
-abstract class Summary extends AuditableBase implements Serializable,Bizable {
+public abstract class Summary extends AuditableBase implements Serializable,Bizable {
 
     @Column(nullable = false)
     private String title;
