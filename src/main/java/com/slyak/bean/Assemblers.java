@@ -13,11 +13,11 @@ import java.util.Map;
  * @author <a href="mailto:stormning@163.com">stormning</a>
  * @version V1.0, 2015/7/8
  */
-public class Assemblers<S, K, V> {
+public class Assemblers {
 
-    private List<Assembler<S, K, V>> assemblers;
+    private List<Assembler> assemblers;
 
-    public Assemblers(List<Assembler<S, K, V>> assemblers) {
+    public Assemblers(List<Assembler> assemblers) {
         this.assemblers = assemblers;
     }
 
@@ -25,19 +25,19 @@ public class Assemblers<S, K, V> {
 
     }
 
-    public void assemble(List<S> sources) {
+    public void assemble(List sources) {
         if (!CollectionUtils.isEmpty(sources) && !CollectionUtils.isEmpty(assemblers)) {
             if (sources.size() == 1) {
                 assemble(sources.get(0));
             } else {
-                for (Assembler<S, K, V> assembler : assemblers) {
-                    List<K> keys = Lists.newArrayList();
-                    for (S s : sources) {
+                for (Assembler assembler : assemblers) {
+                    List<Object> keys = Lists.newArrayList();
+                    for (Object s : sources) {
                         keys.add(assembler.getKey(s));
                     }
-                    Map<K, V> kvs = assembler.mget(keys);
-                    for (S s : sources) {
-                        K key = assembler.getKey(s);
+                    Map<Object, Object> kvs = assembler.mget(keys);
+                    for (Object s : sources) {
+                        Object key = assembler.getKey(s);
                         assembler.assemble(s, kvs.get(key));
                     }
                 }
@@ -45,11 +45,11 @@ public class Assemblers<S, K, V> {
         }
     }
 
-    public void assemble(S source) {
+    public void assemble(Object source) {
         if (source != null && !CollectionUtils.isEmpty(assemblers)) {
-            for (Assembler<S, K, V> assembler : assemblers) {
-                K id = assembler.getKey(source);
-                V target = assembler.get(id);
+            for (Assembler assembler : assemblers) {
+                Object id = assembler.getKey(source);
+                Object target = assembler.get(id);
                 assembler.assemble(source, target);
             }
         }
