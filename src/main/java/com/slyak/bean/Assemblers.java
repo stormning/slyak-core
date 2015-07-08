@@ -21,6 +21,10 @@ public class Assemblers<S, K, V> {
         this.assemblers = assemblers;
     }
 
+    private Assemblers() {
+
+    }
+
     public void assemble(List<S> sources) {
         if (!CollectionUtils.isEmpty(sources) && assemblers.size() > 0) {
             if (sources.size() == 1) {
