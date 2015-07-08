@@ -2,6 +2,7 @@ package com.slyak.core.freemarker;
 
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
@@ -20,14 +21,26 @@ public class FmUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(FmUtils.class);
 
     public static String renderTpl(String tpl, Object model) {
+        return renderTpl(getTemplate(tpl), model);
+    }
+
+    public static String renderTpl(Template template, Object model) {
         try {
-            Template template = FmContext.cfg.getTemplate(tpl);
             return FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
-        } catch (TemplateException e) {
-            LOGGER.error("template error", e);
         } catch (IOException e) {
-            LOGGER.error("template not found", e);
+            LOGGER.error("Template {0} not found", template.getName());
+        } catch (TemplateException e) {
+            LOGGER.error("Render template error", e);
         }
-        return null;
+        return StringUtils.EMPTY;
+    }
+
+    public static Template getTemplate(String tpl) {
+        try {
+            return FmContext.cfg.getTemplate(tpl);
+        } catch (IOException e) {
+            LOGGER.error("Template {0} not found", tpl);
+            return null;
+        }
     }
 }
